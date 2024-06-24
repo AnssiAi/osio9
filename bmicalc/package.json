@@ -1,0 +1,16 @@
+{
+  "name": "bmicalc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bmicalc.ts",
+  "scripts": {
+    "ts-node": "ts-node",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "AnssiAi",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}
