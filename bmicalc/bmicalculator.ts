@@ -1,5 +1,20 @@
-const inRange = (low: number, high: number, item: number): boolean => {
-  return low <= item && item <= high;
+interface inputArgs {
+  value1: number;
+  value2: number;
+}
+
+const parseProcessArgs = (args: string[]): inputArgs => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+  if (args.length > 4) throw new Error("Too many arguments");
+
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      value1: Number(args[2]),
+      value2: Number(args[3]),
+    };
+  } else {
+    throw new Error("Arguments were not numbers");
+  }
 };
 
 const calculateBmi = (height: number, weight: number): string => {
@@ -9,21 +24,24 @@ const calculateBmi = (height: number, weight: number): string => {
   const heightForCalc: number = heightInM * heightInM;
   const bmi: number = weight / heightForCalc;
 
-  const under: boolean = inRange(0, 18.4, bmi);
-  const normal: boolean = inRange(18.5, 24.9, bmi);
-  const over: boolean = inRange(25, 40, bmi);
-
-  if (under) {
+  if (bmi <= 18.4) {
     result = "Underweight";
   }
-  if (normal) {
+  if (bmi >= 18.5 && bmi <= 24.9) {
     result = "Normal (healthy weight)";
   }
-  if (over) {
+  if (bmi >= 25) {
     result = "Overweight";
   }
 
   return result;
 };
 
-console.log(calculateBmi(180, 74));
+try {
+  const { value1, value2 } = parseProcessArgs(process.argv);
+  console.log(calculateBmi(value1, value2));
+} catch (err: unknown) {
+  if (err instanceof Error) {
+    console.log("Error:", err.message);
+  }
+}

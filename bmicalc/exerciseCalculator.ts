@@ -8,6 +8,21 @@ interface dailyExerciseH {
   ratingDescription: string;
 }
 
+const parseProcessArgsToNumArr = (args: string[]): number[] => {
+  if (args.length <= 3) throw Error("not enough arguments");
+  const dataArgs: string[] = args.slice(2);
+
+  const result = dataArgs.map((item: string) => {
+    if (!isNaN(Number(item))) {
+      return Number(item);
+    } else {
+      throw new Error("Argument was not a number");
+    }
+  });
+
+  return result;
+};
+
 const getRating = (avrg: number, target: number): number => {
   let rating: number = 0;
   const line = target / 2;
@@ -43,10 +58,16 @@ const getDescription = (rating: number): string => {
 };
 
 const calculateExercises = (data: number[]): dailyExerciseH => {
-  const targethDaily: number = 2;
-  const trainingPeriod: number = data.length;
-  const activeDays: number = data.filter((item: number) => item > 0).length;
-  const totalHours = data.reduce((acc: number, cur: number) => acc + cur, 0);
+  const targethDaily: number = data[0];
+  const trainingData: number[] = data.slice(1);
+  const trainingPeriod: number = trainingData.length;
+  const activeDays: number = trainingData.filter(
+    (item: number) => item > 0
+  ).length;
+  const totalHours = trainingData.reduce(
+    (acc: number, cur: number) => acc + cur,
+    0
+  );
   const avrg: number = totalHours / trainingPeriod;
   const rating: number = getRating(avrg, targethDaily);
   const description: string = getDescription(rating);
@@ -63,6 +84,11 @@ const calculateExercises = (data: number[]): dailyExerciseH => {
   };
 };
 
-const testData = [3, 0, 2, 4.5, 0, 3, 1];
-
-console.log(calculateExercises(testData));
+try {
+  const data: number[] = parseProcessArgsToNumArr(process.argv);
+  console.log(calculateExercises(data));
+} catch (err: unknown) {
+  if (err instanceof Error) {
+    console.log("Error:", err.message);
+  }
+}
