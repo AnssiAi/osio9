@@ -5,7 +5,8 @@ const inRange = (low: number, high: number, item: number): boolean => {
 const calculateBmi = (height: number, weight: number): string => {
   let result: string = "";
 
-  const heightForCalc: number = (height / 100) * (height / 100);
+  const heightInM: number = height / 100;
+  const heightForCalc: number = heightInM * heightInM;
   const bmi: number = weight / heightForCalc;
 
   const under: boolean = inRange(0, 18.4, bmi);
