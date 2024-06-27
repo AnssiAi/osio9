@@ -45,3 +45,5 @@ try {
     console.log("Error:", err.message);
   }
 }
+
+export default calculateBmi;
