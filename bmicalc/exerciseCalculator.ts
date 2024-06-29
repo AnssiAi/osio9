@@ -1,11 +1,11 @@
 interface dailyExerciseH {
-  period: number;
+  periodLength: number;
   trainingDays: number;
-  target: number;
-  avrgTime: number;
-  targetReached: boolean;
+  success: boolean;
   rating: number;
   ratingDescription: string;
+  target: number;
+  average: number;
 }
 
 const parseProcessArgsToNumArr = (args: string[]): number[] => {
@@ -57,7 +57,7 @@ const getDescription = (rating: number): string => {
   return result;
 };
 
-const calculateExercises = (data: number[]): dailyExerciseH => {
+export const calculateExercises = (data: number[]): dailyExerciseH => {
   const targethDaily: number = data[0];
   const trainingData: number[] = data.slice(1);
   const trainingPeriod: number = trainingData.length;
@@ -74,13 +74,13 @@ const calculateExercises = (data: number[]): dailyExerciseH => {
   const targetReached = avrg >= targethDaily ? true : false;
 
   return {
-    period: trainingPeriod,
+    periodLength: trainingPeriod,
     trainingDays: activeDays,
-    target: targethDaily,
-    avrgTime: avrg,
-    targetReached: targetReached,
+    success: targetReached,
     rating: rating,
     ratingDescription: description,
+    target: targethDaily,
+    average: avrg,
   };
 };
 

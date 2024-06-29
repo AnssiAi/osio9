@@ -17,7 +17,7 @@ const parseProcessArgs = (args: string[]): inputArgs => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   let result: string = "";
 
   const heightInM: number = height / 100;
@@ -45,5 +45,3 @@ try {
     console.log("Error:", err.message);
   }
 }
-
-export default calculateBmi;
