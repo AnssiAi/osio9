@@ -1,8 +1,5 @@
-interface CoursePart {
-  name: string;
-  exerciseCount: number;
-}
-
+import { CoursePart } from "./types";
+import Part from "./Part";
 const Content = ({
   courseParts,
 }: {
@@ -12,9 +9,7 @@ const Content = ({
     <>
       {courseParts.map((part, index) => (
         <div key={index}>
-          <p>
-            {part.name} {part.exerciseCount}
-          </p>
+          <Part partItem={part} />
         </div>
       ))}
     </>
