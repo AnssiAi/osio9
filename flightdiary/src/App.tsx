@@ -1,12 +1,13 @@
 import axios from "axios";
 import "./styles.css";
 import { useEffect, useState } from "react";
-import { DiaryEntry } from "./types";
+import { DiaryEntry, NewDiaryEntry } from "./types";
+import { parseDate, parseVisibility, parseWeather } from "./utils";
 
 function App() {
   const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
   const [message, setMessage] = useState<string>("");
-  const [date, setDate] = useState<string>("");
+  const [date, setDate] = useState<Date>(new Date());
   const [visibility, setVisibility] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
   const [comment, setComment] = useState<string>("");
@@ -22,10 +23,10 @@ function App() {
   const newDiaryHandler = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const entryObject = {
-      date: date,
-      visibility: visibility,
-      weather: weather,
+    const entryObject: NewDiaryEntry = {
+      date: parseDate(date),
+      visibility: parseVisibility(visibility),
+      weather: parseWeather(weather),
       comment: comment,
     };
 
@@ -44,9 +45,7 @@ function App() {
           console.log(err);
         }
       });
-    setDate("");
-    setVisibility("");
-    setWeather("");
+
     setComment("");
   };
 
@@ -63,30 +62,99 @@ function App() {
           <label>
             Date:
             <input
-              type="text"
+              type="date"
               name="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
+              value={date.toISOString().substring(0, 10)}
+              onChange={e => setDate(new Date(e.target.value))}
             />
           </label>
-          <label>
-            Visibility:
-            <input
-              type="text"
-              name="visibility"
-              value={visibility}
-              onChange={e => setVisibility(e.target.value)}
-            />
-          </label>
-          <label>
-            Weather:
-            <input
-              type="text"
-              name="weather"
-              value={weather}
-              onChange={e => setWeather(e.target.value)}
-            />
-          </label>
+          <fieldset>
+            <legend>Visibility: </legend>
+            <div>
+              <input
+                type="radio"
+                name="visibility"
+                value="great"
+                onChange={e => setVisibility(e.target.value)}
+              />
+              <label>Great</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="visibility"
+                value="good"
+                onChange={e => setVisibility(e.target.value)}
+              />
+              <label>Good</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="visibility"
+                value="ok"
+                onChange={e => setVisibility(e.target.value)}
+              />
+              <label>Ok</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="visibility"
+                value="poor"
+                onChange={e => setVisibility(e.target.value)}
+              />
+              <label>Poor</label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Weather: </legend>
+            <div>
+              <input
+                type="radio"
+                name="weather"
+                value="sunny"
+                onChange={e => setWeather(e.target.value)}
+              />
+              <label>Sunny</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="weather"
+                value="rainy"
+                onChange={e => setWeather(e.target.value)}
+              />
+              <label>Rainy</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="weather"
+                value="cloudy"
+                onChange={e => setWeather(e.target.value)}
+              />
+              <label>Cloudy</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="weather"
+                value="stormy"
+                onChange={e => setWeather(e.target.value)}
+              />
+              <label>Stormy</label>
+            </div>
+            <div>
+              <input
+                type="radio"
+                name="weather"
+                value="windy"
+                onChange={e => setWeather(e.target.value)}
+              />
+              <label>Windy</label>
+            </div>
+          </fieldset>
           <label>
             Comment:
             <input
