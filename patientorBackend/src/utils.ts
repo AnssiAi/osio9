@@ -1,4 +1,4 @@
-import { NewPatient, Gender } from "./types";
+import { NewPatient, Gender, Entry } from "./types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
@@ -47,12 +47,14 @@ export const toNewPatient = (object: unknown): NewPatient => {
     "gender" in object &&
     "occupation" in object
   ) {
+    const entryTable: Entry[] = [];
     const patient: NewPatient = {
       name: parseString(object.name),
       dateOfBirth: parseDate(object.dateOfBirth),
       ssn: parseString(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseString(object.occupation),
+      entries: entryTable,
     };
 
     return patient;

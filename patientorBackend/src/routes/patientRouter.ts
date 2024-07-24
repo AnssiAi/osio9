@@ -8,6 +8,16 @@ router.get("/", (_req, res) => {
   res.send(patientService.getSecurePatients());
 });
 
+router.get("/:id", (_req, res) => {
+  const found = patientService.getPatientById(_req.params.id);
+  console.log(_req.params.id);
+  if (found) {
+    res.send(found);
+  } else {
+    res.status(400).send("Id not recognized");
+  }
+});
+
 router.post("/", (_req, res) => {
   try {
     const newPatient = toNewPatient(_req.body);
