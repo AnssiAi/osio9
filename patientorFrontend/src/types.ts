@@ -52,6 +52,13 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3,
 }
 
+export enum RatingColors {
+  Healthy = "green",
+  LowRisk = "blue",
+  HighRisk = "yellow",
+  CriticalRisk = "red",
+}
+
 export interface Patient {
   id: string;
   name: string;
