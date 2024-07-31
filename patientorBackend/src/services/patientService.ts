@@ -1,6 +1,12 @@
 import patientData from "../../data/patients";
 import { v1 as uuid } from "uuid";
-import { NonSensitivePatient, Patient, NewPatient } from "../types";
+import {
+  NonSensitivePatient,
+  Patient,
+  NewPatient,
+  EntryWithoutId,
+  Entry,
+} from "../types";
 
 const getSecurePatients = (): NonSensitivePatient[] => {
   return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
@@ -25,7 +31,7 @@ const getNewID = (): string => {
 };
 
 const addPatient = (patient: NewPatient): Patient => {
-  const newPatient = {
+  const newPatient: Patient = {
     id: getNewID(),
     ...patient,
   };
@@ -33,8 +39,32 @@ const addPatient = (patient: NewPatient): Patient => {
   return newPatient;
 };
 
+const addEntry = (entry: EntryWithoutId, id: string): Entry => {
+  const newEntry: Entry = {
+    id: getNewID(),
+    ...entry,
+  };
+  const foundPatient = getPatientById(id);
+  if (foundPatient) {
+    const updatedPatient: Patient = {
+      ...foundPatient,
+      entries: foundPatient.entries.concat(newEntry),
+    };
+    const foundIndex = patientData.findIndex(
+      (patient: Patient) => patient.id === foundPatient.id
+    );
+    patientData[foundIndex] = {
+      ...updatedPatient,
+    };
+    console.log(patientData);
+    return newEntry;
+  }
+  throw new Error("Patient not found");
+};
+
 export default {
   getSecurePatients,
   addPatient,
   getPatientById,
+  addEntry,
 };
