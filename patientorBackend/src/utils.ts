@@ -16,7 +16,7 @@ const isNumber = (value: unknown): value is number => {
 };
 
 const parseString = (value: unknown): string => {
-  if (!isString(value)) {
+  if (!isString(value) || value.length === 0) {
     throw new Error("Incorrect or missing value.");
   }
   return value;
