@@ -4,9 +4,10 @@ import { EntryWithoutId } from "../../types";
 
 interface Props {
   onSubmit: (values: EntryWithoutId) => void;
+  onClose: () => void;
 }
 
-const HospitalForm = ({ onSubmit }: Props) => {
+const HospitalForm = ({ onSubmit, onClose }: Props) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
@@ -43,12 +44,6 @@ const HospitalForm = ({ onSubmit }: Props) => {
         };
       }
       onSubmit(hospitalObject);
-      setDescription("");
-      setDate("");
-      setSpecialist("");
-      setCodes("");
-      setDischargeDate("");
-      setDischargeCriteria("");
     }
   };
   return (
@@ -111,6 +106,14 @@ const HospitalForm = ({ onSubmit }: Props) => {
             onChange={e => setCodes(e.target.value)}
           />
         </div>
+        <Button
+          variant="contained"
+          color="error"
+          sx={{ marginTop: 2, marginBottom: 2 }}
+          onClick={() => onClose()}
+        >
+          Close
+        </Button>
         <Button
           variant="contained"
           sx={{ marginTop: 2, marginBottom: 2 }}

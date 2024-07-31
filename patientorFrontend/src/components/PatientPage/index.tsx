@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import AddEntryModal from "../AddEntryModal";
 import SvgIcon from "@mui/material/SvgIcon";
 import Male from "@mui/icons-material/Male";
@@ -26,7 +20,7 @@ interface Props {
 const PatientPage = ({ diagnoses }: Props) => {
   const [error, setError] = useState<string>();
   const [patient, setPatient] = useState<Patient>();
-  const [formToOpen, setFormToOpen] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const id: string | undefined = useParams().id;
 
@@ -37,6 +31,13 @@ const PatientPage = ({ diagnoses }: Props) => {
     };
     void fetchPatient(id);
   }, [id]);
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   const findDiagnoseName = (code: string): string => {
     const foundDiagnosis = diagnoses.find(dia => dia.code === code);
@@ -84,6 +85,7 @@ const PatientPage = ({ diagnoses }: Props) => {
           entries: patient.entries?.concat(entry),
         };
         setPatient(newPatient);
+        setModalOpen(false);
       }
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
@@ -116,24 +118,14 @@ const PatientPage = ({ diagnoses }: Props) => {
           </h3>
           <p>ssn: {patient.ssn}</p>
           <p>occupation: {patient?.occupation}</p>
-          <FormControl fullWidth>
-            <InputLabel id="formSelectLbl">Entry</InputLabel>
-            <Select
-              labelId="formSelectLbl"
-              id="formSelect"
-              value={formToOpen}
-              label="Age"
-              onChange={e => setFormToOpen(e.target.value)}
-            >
-              <MenuItem value={0}>Healthcheck</MenuItem>
-              <MenuItem value={1}>Hospital</MenuItem>
-              <MenuItem value={2}>Occupational health</MenuItem>
-            </Select>
-          </FormControl>
+          <Button variant="contained" onClick={() => openModal()}>
+            Add New Entry
+          </Button>
           <AddEntryModal
-            toOpen={formToOpen}
+            modalOpen={modalOpen}
             onSubmit={submitEntryHandler}
             error={error}
+            onClose={closeModal}
           />
           <h4>entries</h4>
           {patient.entries?.map((entry: Entry) => (
