@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Alert from "@mui/material/Alert";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from "@mui/material";
+import AddEntryModal from "../AddEntryModal";
 import SvgIcon from "@mui/material/SvgIcon";
 import Male from "@mui/icons-material/Male";
 import Female from "@mui/icons-material/Female";
@@ -11,7 +18,6 @@ import patientService from "../../services/patients";
 
 import { Patient, Entry, Diagnosis, EntryWithoutId } from "../../types";
 import EntryContainer from "../EntryContainer/EntryContainer";
-import { Box, Button, TextField } from "@mui/material";
 
 interface Props {
   diagnoses: Diagnosis[];
@@ -20,11 +26,7 @@ interface Props {
 const PatientPage = ({ diagnoses }: Props) => {
   const [error, setError] = useState<string>();
   const [patient, setPatient] = useState<Patient>();
-  const [description, setDescription] = useState<string>("");
-  const [date, setDate] = useState<string>("");
-  const [specialist, setSpecialist] = useState<string>("");
-  const [rating, setRating] = useState<string>("");
-  const [codes, setCodes] = useState<string>("");
+  const [formToOpen, setFormToOpen] = useState<string>("");
 
   const id: string | undefined = useParams().id;
 
@@ -36,7 +38,6 @@ const PatientPage = ({ diagnoses }: Props) => {
     void fetchPatient(id);
   }, [id]);
 
-  /*
   const findDiagnoseName = (code: string): string => {
     const foundDiagnosis = diagnoses.find(dia => dia.code === code);
     let returnValue: string = "";
@@ -45,7 +46,6 @@ const PatientPage = ({ diagnoses }: Props) => {
     }
     return returnValue;
   };
-  */
 
   const showGender = (value: string) => {
     switch (value) {
@@ -70,27 +70,12 @@ const PatientPage = ({ diagnoses }: Props) => {
     }
   };
 
-  const submitEntryHandler = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    let submitObject: EntryWithoutId = {
-      description: description,
-      date: date,
-      specialist: specialist,
-      type: "HealthCheck",
-      healthCheckRating: parseInt(rating),
-    };
-    if (codes !== "") {
-      const codeArray: string[] = codes.split(",");
-      submitObject = {
-        ...submitObject,
-        diagnosisCodes: codeArray,
-      };
-    }
+  const submitEntryHandler = async (values: EntryWithoutId) => {
     //Send entry to backend
     try {
       if (patient) {
         const entry: Entry = await patientService.createEntry(
-          submitObject,
+          values,
           patient.id
         );
 
@@ -120,21 +105,6 @@ const PatientPage = ({ diagnoses }: Props) => {
         setError(undefined);
       }, 3000);
     }
-    setDescription("");
-    setDate("");
-    setSpecialist("");
-    setRating("");
-    setCodes("");
-  };
-
-  const cancelEntryHandler = (e: React.SyntheticEvent) => {
-    e.preventDefault();
-
-    setDescription("");
-    setDate("");
-    setSpecialist("");
-    setRating("");
-    setCodes("");
   };
 
   return (
@@ -146,72 +116,25 @@ const PatientPage = ({ diagnoses }: Props) => {
           </h3>
           <p>ssn: {patient.ssn}</p>
           <p>occupation: {patient?.occupation}</p>
-          {error ? <Alert severity="error">{error}</Alert> : null}
-          <Box sx={{ border: "1px solid grey", padding: 2 }}>
-            <h3>New HealthCheck entry</h3>
-            <form onSubmit={e => submitEntryHandler(e)}>
-              <div>
-                <TextField
-                  id="standard-required"
-                  label="Description"
-                  variant="standard"
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                />
-              </div>
-              <div>
-                <TextField
-                  id="standard-required"
-                  label="Date"
-                  variant="standard"
-                  value={date}
-                  onChange={e => setDate(e.target.value)}
-                />
-              </div>
-              <div>
-                <TextField
-                  id="standard-required"
-                  label="Specialist"
-                  variant="standard"
-                  value={specialist}
-                  onChange={e => setSpecialist(e.target.value)}
-                />
-              </div>
-              <div>
-                <TextField
-                  id="standard-number"
-                  label="Healthcheck rating"
-                  variant="standard"
-                  value={rating}
-                  onChange={e => setRating(e.target.value)}
-                />
-              </div>
-              <div>
-                <TextField
-                  id="standard-basic"
-                  label="Diagnosis codes"
-                  variant="standard"
-                  value={codes}
-                  onChange={e => setCodes(e.target.value)}
-                />
-              </div>
-              <Button
-                variant="contained"
-                color="error"
-                sx={{ marginTop: 2, marginBottom: 2, marginRight: 2 }}
-                onClick={e => cancelEntryHandler(e)}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                sx={{ marginTop: 2, marginBottom: 2 }}
-                type="submit"
-              >
-                Add
-              </Button>
-            </form>
-          </Box>
+          <FormControl fullWidth>
+            <InputLabel id="formSelectLbl">Entry</InputLabel>
+            <Select
+              labelId="formSelectLbl"
+              id="formSelect"
+              value={formToOpen}
+              label="Age"
+              onChange={e => setFormToOpen(e.target.value)}
+            >
+              <MenuItem value={0}>Healthcheck</MenuItem>
+              <MenuItem value={1}>Hospital</MenuItem>
+              <MenuItem value={2}>Occupational health</MenuItem>
+            </Select>
+          </FormControl>
+          <AddEntryModal
+            toOpen={formToOpen}
+            onSubmit={submitEntryHandler}
+            error={error}
+          />
           <h4>entries</h4>
           {patient.entries?.map((entry: Entry) => (
             <EntryContainer entry={entry} key={entry.id} />
