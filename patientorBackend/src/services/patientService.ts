@@ -56,7 +56,6 @@ const addEntry = (entry: EntryWithoutId, id: string): Entry => {
     patientData[foundIndex] = {
       ...updatedPatient,
     };
-    console.log(patientData);
     return newEntry;
   }
   throw new Error("Patient not found");
