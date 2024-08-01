@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, InputLabel } from "@mui/material";
 import { EntryWithoutId } from "../../types";
+import DiagnosisCodesInput from "./DiagnosisCodesInput";
 
 interface Props {
   onSubmit: (values: EntryWithoutId) => void;
@@ -11,7 +12,7 @@ const OccupationalHealthForm = ({ onSubmit, onClose }: Props) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
-  const [codes, setCodes] = useState<string>("");
+  const [codes, setCodes] = useState<string[]>([]);
   const [employerName, setEmployerName] = useState<string>("");
   const [sickLeaveStart, setSickLeaveStart] = useState<string>("");
   const [sickLeaveEnd, setSickLeaveEnd] = useState<string>("");
@@ -38,7 +39,7 @@ const OccupationalHealthForm = ({ onSubmit, onClose }: Props) => {
         };
       }
       if (codes.length > 0) {
-        const diagnosisCodes: string[] = codes.split(",");
+        const diagnosisCodes: string[] = codes;
         occupationalHealthObject = {
           ...occupationalHealthObject,
           diagnosisCodes,
@@ -53,6 +54,7 @@ const OccupationalHealthForm = ({ onSubmit, onClose }: Props) => {
       <form onSubmit={e => addEntry(e)}>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Description"
             variant="standard"
@@ -62,15 +64,16 @@ const OccupationalHealthForm = ({ onSubmit, onClose }: Props) => {
         </div>
         <div>
           <TextField
-            id="standard-required"
-            label="Date"
-            variant="standard"
+            sx={{ m: 1, width: 300 }}
+            type="date"
+            id="dateInput"
             value={date}
             onChange={e => setDate(e.target.value)}
           />
         </div>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Specialist"
             variant="standard"
@@ -80,6 +83,7 @@ const OccupationalHealthForm = ({ onSubmit, onClose }: Props) => {
         </div>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Employer"
             variant="standard"
@@ -89,32 +93,26 @@ const OccupationalHealthForm = ({ onSubmit, onClose }: Props) => {
         </div>
         <Box sx={{ border: "1px solid grey", padding: 2 }}>
           <div>
+            <InputLabel>Sickleave start date</InputLabel>
             <TextField
-              id="standard-required"
-              label="Sickleave start date"
-              variant="standard"
+              type="date"
+              id="dateInput"
               value={sickLeaveStart}
               onChange={e => setSickLeaveStart(e.target.value)}
             />
           </div>
           <div>
+            <InputLabel>Sickleave end date</InputLabel>
             <TextField
-              id="standard-required"
-              label="Sickleave end date"
-              variant="standard"
+              type="date"
+              id="dateInput"
               value={sickLeaveEnd}
               onChange={e => setSickLeaveEnd(e.target.value)}
             />
           </div>
         </Box>
         <div>
-          <TextField
-            id="standard-basic"
-            label="Diagnosis codes"
-            variant="standard"
-            value={codes}
-            onChange={e => setCodes(e.target.value)}
-          />
+          <DiagnosisCodesInput codes={codes} setCodes={setCodes} />
         </div>
         <Button
           variant="contained"

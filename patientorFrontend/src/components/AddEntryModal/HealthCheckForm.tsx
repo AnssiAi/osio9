@@ -1,6 +1,14 @@
 import { useState } from "react";
-import { TextField, Button } from "@mui/material";
+import {
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { EntryWithoutId } from "../../types";
+import DiagnosisCodesInput from "./DiagnosisCodesInput";
 
 interface Props {
   onSubmit: (values: EntryWithoutId) => void;
@@ -12,7 +20,7 @@ const HealthCheckForm = ({ onSubmit, onClose }: Props) => {
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
   const [rating, setRating] = useState<string>("");
-  const [codes, setCodes] = useState<string>("");
+  const [codes, setCodes] = useState<string[]>([]);
 
   const addEntry = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -27,7 +35,7 @@ const HealthCheckForm = ({ onSubmit, onClose }: Props) => {
         healthCheckRating,
       };
       if (codes.length > 0) {
-        const diagnosisCodes: string[] = codes.split(",");
+        const diagnosisCodes: string[] = codes;
         healthCheckObject = {
           ...healthCheckObject,
           diagnosisCodes,
@@ -42,6 +50,7 @@ const HealthCheckForm = ({ onSubmit, onClose }: Props) => {
       <form onSubmit={e => addEntry(e)}>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Description"
             variant="standard"
@@ -51,15 +60,16 @@ const HealthCheckForm = ({ onSubmit, onClose }: Props) => {
         </div>
         <div>
           <TextField
-            id="standard-required"
-            label="Date"
-            variant="standard"
+            sx={{ m: 1, width: 300 }}
+            type="date"
+            id="dateInput"
             value={date}
             onChange={e => setDate(e.target.value)}
           />
         </div>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Specialist"
             variant="standard"
@@ -68,22 +78,24 @@ const HealthCheckForm = ({ onSubmit, onClose }: Props) => {
           />
         </div>
         <div>
-          <TextField
-            id="standard-number"
-            label="Healthcheck rating"
-            variant="standard"
-            value={rating}
-            onChange={e => setRating(e.target.value)}
-          />
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="rating-select-label">Rating</InputLabel>
+            <Select
+              labelId="rating-select-label"
+              id="rating-select"
+              value={rating}
+              label="Age"
+              onChange={e => setRating(e.target.value)}
+            >
+              <MenuItem value={"0"}>Healthy</MenuItem>
+              <MenuItem value={"1"}>LowRisk</MenuItem>
+              <MenuItem value={"2"}>HighRisk</MenuItem>
+              <MenuItem value={"3"}>CriticalRisk</MenuItem>
+            </Select>
+          </FormControl>
         </div>
         <div>
-          <TextField
-            id="standard-basic"
-            label="Diagnosis codes"
-            variant="standard"
-            value={codes}
-            onChange={e => setCodes(e.target.value)}
-          />
+          <DiagnosisCodesInput codes={codes} setCodes={setCodes} />
         </div>
         <Button
           variant="contained"

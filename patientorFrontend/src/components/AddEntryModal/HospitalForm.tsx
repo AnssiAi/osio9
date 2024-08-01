@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { TextField, Button, Box } from "@mui/material";
+import { TextField, Button, Box, InputLabel } from "@mui/material";
 import { EntryWithoutId } from "../../types";
+import DiagnosisCodesInput from "./DiagnosisCodesInput";
 
 interface Props {
   onSubmit: (values: EntryWithoutId) => void;
@@ -11,7 +12,7 @@ const HospitalForm = ({ onSubmit, onClose }: Props) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
-  const [codes, setCodes] = useState<string>("");
+  const [codes, setCodes] = useState<string[]>([]);
   const [dischargeDate, setDischargeDate] = useState<string>("");
   const [dischargeCriteria, setDischargeCriteria] = useState<string>("");
 
@@ -37,7 +38,7 @@ const HospitalForm = ({ onSubmit, onClose }: Props) => {
         discharge,
       };
       if (codes.length > 0) {
-        const diagnosisCodes: string[] = codes.split(",");
+        const diagnosisCodes: string[] = codes;
         hospitalObject = {
           ...hospitalObject,
           diagnosisCodes,
@@ -52,6 +53,7 @@ const HospitalForm = ({ onSubmit, onClose }: Props) => {
       <form onSubmit={e => addEntry(e)}>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Description"
             variant="standard"
@@ -61,15 +63,16 @@ const HospitalForm = ({ onSubmit, onClose }: Props) => {
         </div>
         <div>
           <TextField
-            id="standard-required"
-            label="Date"
-            variant="standard"
+            sx={{ m: 1, width: 300 }}
+            type="date"
+            id="dateInput"
             value={date}
             onChange={e => setDate(e.target.value)}
           />
         </div>
         <div>
           <TextField
+            sx={{ m: 1, width: 300 }}
             id="standard-required"
             label="Specialist"
             variant="standard"
@@ -79,10 +82,10 @@ const HospitalForm = ({ onSubmit, onClose }: Props) => {
         </div>
         <Box sx={{ border: "1px solid grey", padding: 2 }}>
           <div>
+            <InputLabel>Discharge date</InputLabel>
             <TextField
-              id="standard-required"
-              label="Discharge date"
-              variant="standard"
+              type="date"
+              id="dateInput"
               value={dischargeDate}
               onChange={e => setDischargeDate(e.target.value)}
             />
@@ -98,13 +101,7 @@ const HospitalForm = ({ onSubmit, onClose }: Props) => {
           </div>
         </Box>
         <div>
-          <TextField
-            id="standard-basic"
-            label="Diagnosis codes"
-            variant="standard"
-            value={codes}
-            onChange={e => setCodes(e.target.value)}
-          />
+          <DiagnosisCodesInput codes={codes} setCodes={setCodes} />
         </div>
         <Button
           variant="contained"
